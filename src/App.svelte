@@ -1,5 +1,9 @@
 <script>
   import { v4 } from 'uuid'
+  import Noty from 'noty'
+
+  import 'noty/lib/themes/sunset.css'
+
   const emptyProduct = {
     id: '',
     name: '',
@@ -26,18 +30,15 @@
     },
   ]
 
-  const onSubmitHandler = () => {
-    if (productIndex >= 0) {
-        updateProduct()
-    }
-    else {
-        addProduct()
-    }
-  }
-
   const addProduct = () => {
-    products = [...products, { id: v4(), ...product }]
+    products = [...products, { ...product, id: v4() }]
     cleanProduct()
+    new Noty({
+        theme: 'sunset',
+        type: 'success',
+        timeout: 3000,
+        text: 'New product added',
+    }).show()
   }
 
   const editHandler = id => {
@@ -51,14 +52,27 @@
   const updateProduct = () => {
     products[productIndex] = product
     finishUpdate()
+    new Noty({
+        theme: 'sunset',
+        type: 'success',
+        timeout: 3000,
+        text: 'Product updated',
+    }).show()
   }
   const finishUpdate = () => {
     productIndex = null
     cleanProduct()
   }
   const deleteHandler = id => {
-    if (confirm('Are you sure you want to delete this product?'))
+    if (confirm('Are you sure you want to delete this product?')) {
         products = products.filter(p => p.id !== id)
+        new Noty({
+            theme: 'sunset',
+            type: 'error',
+            timeout: 3000,
+            text: 'Product deleted',
+        }).show()
+    }
   }
 </script>
 
@@ -97,7 +111,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <form on:submit|preventDefault={onSubmitHandler}>
+            <form on:submit|preventDefault>
               <div class="form-group">
                 <input
                   bind:value={product.name}
